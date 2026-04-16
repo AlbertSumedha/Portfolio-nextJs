@@ -11,6 +11,7 @@ export default function PortfolioPage() {
   const [activeSection, setActiveSection] = useState("home");
   const [scrollPct, setScrollPct] = useState(0);
   const [showTop, setShowTop] = useState(false);
+  const [porttopiaHovered, setPorttopiaHovered] = useState(false);
   const skillsRef = useRef<HTMLElement>(null);
 
   // ── DATA ──────────────────────────────────────────────
@@ -483,6 +484,182 @@ export default function PortfolioPage() {
         /* Page entrance */
         .page-enter{animation:enterUp .8s cubic-bezier(.16,1,.3,1) both;}
         @keyframes enterUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+        /* ── PORTTOPIA FLOATING BUTTON ────────────────── */
+        #porttopia-float {
+          position: fixed;
+          bottom: 2rem;
+          left: 2rem;
+          z-index: 150;
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          background: rgba(10, 11, 17, 0.92);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(108,99,255,0.4);
+          border-radius: 100px;
+          padding: 10px 20px 10px 0px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 0 rgba(108,99,255,0);
+          transition: transform .4s cubic-bezier(.03,.98,.52,.99),
+                      border-color .3s,
+                      box-shadow .3s;
+          animation: porttopiaEntrance .8s 1.2s cubic-bezier(.16,1,.3,1) both;
+        }
+        #porttopia-float:hover {
+          transform: translateY(-4px);
+          border-color: rgba(108,99,255,0.7);
+          box-shadow: 0 16px 48px rgba(0,0,0,0.5),
+                      0 0 0 4px rgba(108,99,255,0.08),
+                      0 0 32px rgba(108,99,255,0.2);
+        }
+        @keyframes porttopiaEntrance {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        #porttopia-float .pt-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #6c63ff, #00d4aa);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          position: relative;
+          overflow: hidden;
+        }
+        #porttopia-float .pt-icon::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          background: conic-gradient(transparent 60%, rgba(255,255,255,0.25) 100%);
+          animation: ptSpin 3s linear infinite;
+        }
+        @keyframes ptSpin { to { transform: rotate(360deg); } }
+
+        #porttopia-float .pt-icon svg {
+          width: 16px;
+          height: 16px;
+          position: relative;
+          z-index: 1;
+        }
+
+        #porttopia-float .pt-text {
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+          line-height: 1;
+        }
+        #porttopia-float .pt-eyebrow {
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #00d4aa;
+        }
+        #porttopia-float .pt-label {
+          font-family: 'Manrope', sans-serif;
+          font-size: 13px;
+          font-weight: 800;
+          color: #f0f0f5;
+          letter-spacing: -0.03em;
+          white-space: nowrap;
+        }
+
+        #porttopia-float .pt-badge {
+          position: absolute;
+          top: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: linear-gradient(135deg, #6c63ff, #00d4aa);
+          border-radius: 100px;
+          padding: 2px 8px;
+          font-size: 9px;
+          font-weight: 700;
+          color: #fff;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          box-shadow: 0 2px 8px rgba(108,99,255,0.5);
+          animation: badgePulse 3s ease-in-out infinite;
+        }
+        @keyframes badgePulse {
+          0%,100% { box-shadow: 0 2px 8px rgba(108,99,255,0.5); }
+          50% { box-shadow: 0 2px 16px rgba(108,99,255,0.8), 0 0 24px rgba(0,212,170,0.3); }
+        }
+
+        #porttopia-float .pt-arrow {
+          font-size: 14px;
+          color: #6c63ff;
+          font-weight: 700;
+          transition: transform .3s;
+          margin-left: 2px;
+        }
+        #porttopia-float:hover .pt-arrow {
+          transform: translateX(3px);
+        }
+
+        /* Tooltip on hover — desktop only */
+        #porttopia-tooltip {
+          position: fixed;
+          bottom: 5.4rem;
+          left: 2rem;
+          z-index: 151;
+          background: rgba(17,18,24,0.97);
+          border: 1px solid rgba(108,99,255,0.3);
+          border-radius: 14px;
+          padding: 12px 16px;
+          width: 220px;
+          pointer-events: none;
+          opacity: 0;
+          transform: translateY(6px);
+          transition: opacity .25s, transform .25s;
+          backdrop-filter: blur(16px);
+        }
+        #porttopia-tooltip.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        #porttopia-tooltip::after {
+          content: '';
+          position: absolute;
+          bottom: -6px;
+          left: 28px;
+          width: 10px;
+          height: 10px;
+          background: rgba(17,18,24,0.97);
+          border-right: 1px solid rgba(108,99,255,0.3);
+          border-bottom: 1px solid rgba(108,99,255,0.3);
+          transform: rotate(45deg);
+        }
+        #porttopia-tooltip .tt-title {
+          font-family: 'Manrope', sans-serif;
+          font-size: 12px;
+          font-weight: 800;
+          color: #f0f0f5;
+          letter-spacing: -0.02em;
+          margin-bottom: 4px;
+        }
+        #porttopia-tooltip .tt-desc {
+          font-size: 11px;
+          color: #8888a4;
+          font-weight: 500;
+          line-height: 1.6;
+        }
+        #porttopia-tooltip .tt-dots {
+          display: flex;
+          gap: 4px;
+          margin-top: 8px;
+        }
+        #porttopia-tooltip .tt-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+        }
       `}</style>
 
       {/* Custom cursor */}
@@ -503,6 +680,64 @@ export default function PortfolioPage() {
           </svg>
         </button>
       )}
+
+      {/* ── PORTTOPIA FLOATING BUTTON ── */}
+      <>
+        {/* Tooltip */}
+        <div
+          id="porttopia-tooltip"
+          className={porttopiaHovered ? "visible" : ""}
+        >
+          <div className="tt-title">✦ Porttopia — Game Portfolio</div>
+          <div className="tt-desc">
+            Lihat versi lain dari portfolio ini yang didesain dengan gaya game
+            &amp; interaktif.
+          </div>
+          <div className="tt-dots">
+            <div className="tt-dot" style={{ background: "#6c63ff" }} />
+            <div className="tt-dot" style={{ background: "#00d4aa" }} />
+            <div
+              className="tt-dot"
+              style={{ background: "rgba(255,255,255,0.15)" }}
+            />
+          </div>
+        </div>
+
+        <a
+          id="porttopia-float"
+          href="https://porttopia.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ position: "fixed" }}
+          onMouseEnter={() => setPorttopiaHovered(true)}
+          onMouseLeave={() => setPorttopiaHovered(false)}
+        >
+          <div className="pt-badge">Game Version</div>
+
+          {/* Icon */}
+          <div className="pt-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="10,8 16,12 10,16" fill="white" stroke="none" />
+            </svg>
+          </div>
+
+          {/* Text */}
+          <div className="pt-text">
+            <span className="pt-eyebrow">Also check out</span>
+            <span className="pt-label">Porttopia</span>
+          </div>
+
+          <span className="pt-arrow">→</span>
+        </a>
+      </>
 
       <div
         className="page-enter"
